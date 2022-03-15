@@ -75,17 +75,24 @@ class BinarySearchTree {
     this.removeNode(this, value);
   }
 
-  removeNode(node, value){
+  removeNode(node, value, parent){
     if(!node){
       return null;
     }
-
     if(node.data === value){
       if(!node.left&&!node.right){
-         node.data = null;
-         node.left = null;
-         node.right = null;
-         return;
+        if(parent){
+          if(parent.data > value){
+            parent.left=null
+            return;
+          }
+          if(parent.data < value){
+            parent.right=null;
+            return ;
+          }
+        }
+        node = null;
+        return;
       }
       if(!node.right){
         node.data= node.left.data
@@ -101,18 +108,19 @@ class BinarySearchTree {
       }
 
       if(node.left&&node.right){
-        let minNode = this.findMinNode(node.right)
-        node.data=minNode.data
-        this.removeNode(node.right,minNode.data)
+        let minNode = this.findMinNode(node.right);
+        let minData=minNode.data;
+        this.removeNode(node.right,minNode.data,node);
+        node.data = minData;
         return node;
       }
     }
     if(node.data > value){
-      this.removeNode(node.left,value)
+      this.removeNode(node.left,value,node)
       return;
     }
     if(node.data < value){
-      this.removeNode(node.right,value)
+      this.removeNode(node.right,value,node)
       return ;
     }
 
